@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecLab — Практическая кибербезопасность</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-shield">⚡</span> SecLab
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#network" class="nav-link">Передача данных</a></li>
+                <li><a href="#injections" class="nav-link">SQL-инъекции</a></li>
+                <li><a href="#linux" class="nav-link">Linux & Безопасность</a></li>
+                <li><a href="#anonymity" class="nav-link">Приватность</a></li>
+                <li><a href="#roles" class="nav-link">Профессии</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Главный экран -->
+    <header class="hero">
+        <div class="container">
+            <span class="badge hero-badge">Что такое кибербезопасность</span>
+            <h1 class="hero-title">Архитектура <span>сетевой защиты</span></h1>
+            <p class="hero-subtitle">Подробный разбор концепций сетевого взаимодействия, атак на веб-приложения, разграничения прав в Linux и принципов приватности.</p>
+        </div>
+    </header>
+
+    <!-- Раздел 1: Путь данных и безопасность сетей -->
+    <section id="network" class="section">
+        <div class="container">
+            <h2 class="section-title">1. Передача данных: Как клиент общается с БД</h2>
+            <p class="section-desc">Любое действие в сети — это обмен сетевыми пакетами. Рассмотрим архитектуру трехзвенного приложения.</p>
+
+            <div class="architecture-flow">
+                <div class="arch-card">
+                    <div class="card-badge">Клиент (Client)</div>
+                    <h3>Браузер / Приложение</h3>
+                    <p>Пользователь вводит данные (логин/пароль) или запрашивает страницу. Браузер формирует <strong>HTTP/HTTPS-запрос</strong> и отправляет его по IP-адресу сервера.</p>
+                    <ul class="tech-list">
+                        <li>Шифрование TLS/SSL</li>
+                        <li>Защита Cookie & Tokens</li>
+                    </ul>
+                </div>
+
+                <div class="flow-arrow">➡️</div>
+
+                <div class="arch-card">
+                    <div class="card-badge">Сервер (Backend)</div>
+                    <h3>Веб-сервер / API</h3>
+                    <p>Сервер (Nginx, Node.js, Python, PHP) принимает запрос, проверяет авторизацию, валидирует входящие данные и решает, какой запрос отправить в базу.</p>
+                    <ul class="tech-list">
+                        <li>Валидация входящих строк</li>
+                        <li>WAF (Web Application Firewall)</li>
+                    </ul>
+                </div>
+
+                <div class="flow-arrow">➡️</div>
+
+                <div class="arch-card">
+                    <div class="card-badge">База Данных (DB)</div>
+                    <h3>Хранилище (DBMS)</h3>
+                    <p>База данных (PostgreSQL, MySQL) выполняет SQL-команду, находит нужные записи и возвращает результат назад серверу. Прямого доступа из интернета к БД быть не должно.</p>
+                    <ul class="tech-list">
+                        <li>Изоляция в локальной сети</li>
+                        <li>Параметризованные запросы</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>🔑 Почему опасна передача данных без шифрования (HTTP)?</h4>
+                <p>При использовании незащищенного протокола HTTP все данные передаются в открытом виде. Злоумышленник в вашей Wi-Fi сети с помощью анализатора трафика (например, <strong>Wireshark</strong>) может перехватить пароли, сессионные куки и персональную информацию (атака Man-in-the-Middle).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Раздел 2: Анатомия и Защита SQL-инъекций -->
+    <section id="injections" class="section">
+        <div class="container">
+            <h2 class="section-title">2. SQL-инъекции (SQLi): Суть, Механика и Дефенс</h2>
+            <p class="section-desc">SQL-инъекция — один из самых опасных и старых видов атак на веб-приложения, входящий в топ OWASP Top-10.</p>
+
+            <div class="grid-2col">
+                <div class="text-block">
+                    <h3>Как происходит атака?</h3>
+                    <p>Уязвимость возникает, когда сервер <strong>склеивает пользовательские данные с SQL-кодом напрямую</strong>, не проверяя их содержимое.</p>
+                    <p>Если код авторизации выглядит так:</p>
+                    <div class="code-box">
+                        <code>SELECT * FROM users WHERE user = '$user' AND pass = '$pass';</code>
+                    </div>
+                    <p>Хакер передает вместо пароля строку: <code>' OR '1'='1</code>. В результате итоговый запрос к БД превращается в:</p>
+                    <div class="code-box danger">
+                        <code>SELECT * FROM users WHERE user = 'admin' AND pass = '' OR '1'='1';</code>
+                    </div>
+                    <p>Так как условие <code>'1'='1'</code> истинно всегда, база данных игнорирует проверку пароля и выдает доступ к аккаунту администратора.</p>
+                </div>
+
+                <div class="text-block">
+                    <h3>Как защититься от SQLi?</h3>
+                    <div class="defense-method">
+                        <h4>1. Подготовленные выражения (Prepared Statements)</h4>
+                        <p>Использование параметризованных запросов разделяет код и данные. База сначала компилирует структуру SQL-запроса, а затем вставляет текст как безобидную строку.</p>
+                    </div>
+
+                    <div class="defense-method">
+                        <h4>2. Использование ORM</h4>
+                        <p>Фреймворки (SQLAlchemy, Prisma, Django ORM) автоматически экранируют и подготавливают все данные "из коробки".</p>
+                    </div>
+
+                    <div class="defense-method">
+                        <h4>3. Принцип наименьших привилегий</h4>
+                        <p>Пользователь базы данных, под которым работает веб-сайт, не должен иметь прав администратора БД (<code>DROP TABLE</code>, <code>GRANT ALL</code>).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Раздел 3: Linux в кибербезопасности -->
+    <section id="linux" class="section">
+        <div class="container">
+            <h2 class="section-title">3. Linux — Фундамент безопасности</h2>
+            <p class="section-desc">Более 90% серверов, облачных инфраструктур и систем защиты работают на базе ядра Linux.</p>
+
+            <div class="grid-3col">
+                <div class="info-card">
+                    <div class="card-icon">🐧</div>
+                    <h3>Дистрибутивы</h3>
+                    <p><strong>Debian / Ubuntu / Rocky Linux</strong> — стандарты для боевых серверов благодаря стабильности.<br>
+                    <strong>Kali Linux / Parrot OS</strong> — специализированные системы с предустановленным инструментарием (Nmap, Metasploit, Burp Suite) для проведения аудита безопасности.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Права и Доступ (POSIX)</h3>
+                    <p>В Linux всё есть файл. Система строго контролирует права через владельца и группы:</p>
+                    <ul class="text-list">
+                        <li><code>chmod 600 file</code> — чтение/запись только владельцу.</li>
+                        <li><code>chown root:root</code> — смена владельца на суперпользователя.</li>
+                    </ul>
+                    <p>Запуск сервисов от имени обычных пользователей защищает систему при взломе приложения.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-icon">📦</div>
+                    <h3>Изоляция и Песочницы</h3>
+                    <p>Для предотвращения полного захвата сервера при взломе применяются технологии изоляции:</p>
+                    <ul class="text-list">
+                        <li><strong>Docker / Containers:</strong> Сервер изолирован в собственном пространстве имен.</li>
+                        <li><strong>SELinux / AppArmor:</strong> Запрещают процессу выходить за рамки отведенных ему директорий.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Раздел 4: Приватность и Анонимность -->
+    <section id="anonymity" class="section">
+        <div class="container">
+            <h2 class="section-title">4. Приватность: Зачем и как защищаться</h2>
+            <p class="section-desc">Анонимность — это не про скрытие нелегальных действий, а про защиту от слежки, утечек и фингерпринтинга.</p>
+
+            <div class="table-container">
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Инструмент</th>
+                            <th>Шифрование</th>
+                            <th>Скрытие IP</th>
+                            <th>От чего защищает</th>
+                            <th>Ограничения</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HTTPS</strong></td>
+                            <td>Сквозное (TLS)</td>
+                            <td>❌ Нет</td>
+                            <td>Перехват содержимого запросов в открытом Wi-Fi.</td>
+                            <td>Провайдер видит, к какому домену вы обратились.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VPN</strong></td>
+                            <td>Туннельное (AES-256)</td>
+                            <td>✅ Да</td>
+                            <td>Слежка провайдера, региональные блокировки.</td>
+                            <td>Необходимость доверия серверу VPN.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tor Network</strong></td>
+                            <td>Многослойное (3 узла)</td>
+                            <td>✅ Высокое</td>
+                            <td>Таргетированная слежка, цензура, анализ трафика.</td>
+                            <td>Низкая скорость, блокировка выходных узлов сервисами.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box warning">
+                <h4>⚠️ Что такое Browser Fingerprinting (Отпечаток браузера)?</h4>
+                <p>Даже при смене IP-адреса сайты могут идентифицировать вас по уникальному отпечатку: разрешению экрана, списку установленных шрифтов, видеокарте (Canvas API) и расширениям. Для защиты от этого используют специальные браузеры (LibreWolf, Mullvad Browser, Tor Browser).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Раздел 5: Профессии и роли -->
+    <section id="roles" class="section">
+        <div class="container">
+            <h2 class="section-title">5. Специалисты и Роли в Кибербезопасности</h2>
+            <p class="section-desc">Кто защищает цифровой мир и чем отличаются подходы разных команд.</p>
+
+            <div class="grid-3col">
+                <div class="role-card blue-team">
+                    <div class="role-title">Blue Team / Защитники</div>
+                    <p><strong>Кто они:</strong> Системные администраторы, инженеры ИБ, специалисты SOC (Security Operations Center).</p>
+                    <p><strong>Задачи:</strong> Настройка файрволов (iptables/ufw), мониторинг логов, закрытие уязвимостей, настройка бэкапов и реагирование на инциденты.</p>
+                </div>
+
+                <div class="role-card red-team">
+                    <div class="role-title">Red Team / Белые хакеры</div>
+                    <p><strong>Кто они:</strong> Пентестеры (Тестировщики на проникновение), исследователи безопасности.</p>
+                    <p><strong>Задачи:</strong> Легальный взлом инфраструктуры по согласованию с владельцами. Находят бреши в коде и конфигурациях раньше, чем их найдут преступники.</p>
+                </div>
+
+                <div class="role-card black-hat">
+                    <div class="role-title">Black Hat / Преступники</div>
+                    <p><strong>Кто они:</strong> Черные хакеры, киберпреступные группировки.</p>
+                    <p><strong>Задачи:</strong> Взлом систем ради финансовой выгоды, шантажа, шифрования данных вирусами-вымогателями (Ransomware) и кражи интеллектуальной собственности.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© SecLab — Практическое руководство по фундаментальной кибербезопасности</p>
+        </div>
+    </footer>
+
+</body>
+</html>

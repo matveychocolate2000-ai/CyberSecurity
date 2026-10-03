@@ -1,0 +1,388 @@
+:root {
+    /* Osnovna tamna paleta */
+    --bg-main: #080b11;
+    --bg-card: rgba(15, 23, 42, 0.65);
+    --bg-card-hover: rgba(30, 41, 59, 0.85);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(16, 185, 129, 0.3);
+    
+    /* Akcentne boje */
+    --accent-cyan: #10b981;      /* Smaragdno-zelena */
+    --accent-blue: #6366f1;      /* Indigo */
+    --accent-green: #22c55e;     /* Svetlo зелеna */
+    --accent-red: #f43f5e;       /* Koralno-crvena */
+    --accent-purple: #a855f7;    /* Ljubičasta */
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'Fira Code', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navigacija */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(8, 11, 17, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-shield {
+    color: var(--accent-cyan);
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+}
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-cyan);
+}
+
+/* Hero sekcija */
+.hero {
+    padding: 140px 0 80px;
+    text-align: center;
+    background: radial-gradient(circle at top center, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid var(--border-glow);
+    margin-bottom: 24px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+}
+
+.hero-title span {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    max-width: 680px;
+    margin: 0 auto;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Opšte sekcije */
+.section {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.section-desc {
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+
+/* Kartice arhitekture (Sekcija 1) */
+.architecture-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.arch-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.arch-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+}
+
+.card-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    margin-bottom: 8px;
+}
+
+.arch-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+}
+
+.arch-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.flow-arrow {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+}
+
+.tech-list, .text-list {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.tech-list li::before, .text-list li::before {
+    content: "• ";
+    color: var(--accent-cyan);
+}
+
+/* Info blokovi */
+.info-box {
+    background: rgba(16, 185, 129, 0.05);
+    border-left: 4px solid var(--accent-cyan);
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 24px;
+}
+
+.info-box.warning {
+    background: rgba(244, 63, 94, 0.05);
+    border-left-color: var(--accent-red);
+}
+
+.info-box h4 {
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.info-box p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Grid rasporedi */
+.grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.grid-3col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* Kod blokovi (Sekcija 2) */
+.code-box {
+    background: #030508;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    margin: 12px 0;
+    overflow-x: auto;
+}
+
+.code-box.danger {
+    border-color: rgba(244, 63, 94, 0.4);
+    color: var(--accent-red);
+}
+
+.defense-method {
+    margin-bottom: 20px;
+}
+
+.defense-method h4 {
+    font-size: 1rem;
+    color: var(--accent-blue);
+    margin-bottom: 6px;
+}
+
+.defense-method p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Kartice informacija (Sekcija 3) */
+.info-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.card-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.info-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.info-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Tabela (Sekcija 4) */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 24px;
+}
+
+.tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.tech-table th, .tech-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tech-table th {
+    background: rgba(15, 23, 42, 0.8);
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.tech-table td {
+    color: var(--text-muted);
+}
+
+/* Kartice uloga (Sekcija 5) */
+.role-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.role-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.blue-team .role-title { color: var(--accent-blue); }
+.red-team .role-title { color: var(--accent-red); }
+.black-hat .role-title { color: var(--accent-purple); }
+
+.role-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+/* Footer */
+footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Responzivnost */
+@media (max-width: 900px) {
+    .architecture-flow, .grid-2col, .grid-3col {
+        grid-template-columns: 1fr;
+    }
+
+    .flow-arrow {
+        text-align: center;
+        transform: rotate(90deg);
+        margin: 8px 0;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+}
